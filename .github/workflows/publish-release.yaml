@@ -12,6 +12,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
+      - name: downcase REPO
+        run: |
+          echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
       - name: Variable Gathering
         id: gathervars
         run: |
@@ -23,17 +27,16 @@ jobs:
 
           # setting tags
           if echo "$VERSION" | grep -q "beta"; then
-          
-            TAGS="ghcr.io/${{ github.repository }}:beta, ghcr.io/${{ github.repository }}:$VERSION, ghcr.io/${{ github.repository }}:latest"
+            TAGS="ghcr.io/$REPO:beta, ghcr.io/$REPO:$VERSION, ghcr.io/$REPO:latest"
             PRIMARY_TAG=latest
           else
-            TAGS="ghcr.io/${{ github.repository }}:release, ghcr.io/${{ github.repository }}:latest, ghcr.io/${{ github.repository }}:$VERSION"
+            TAGS="ghcr.io/$REPO:release, ghcr.io/$REPO:latest, ghcr.io/$REPO:$VERSION"
             PRIMARY_TAG=latest
           fi
           echo "::set-output name=TAG::$TAGS"
           echo "::set-output name=PRIMARY_TAG::$PRIMARY_TAG"
           # check if version has already been published
-          $(docker manifest inspect ghcr.io/${{ github.repository }}:$VERSION > /dev/null) || NOT_PREVIOUSLY_PUBLISHED=1
+          $(docker manifest inspect ghcr.io/$REPO:$VERSION > /dev/null) || NOT_PREVIOUSLY_PUBLISHED=1
           echo "::set-output name=NOT_PREVIOUSLY_PUBLISHED::$NOT_PREVIOUSLY_PUBLISHED"
 
       - name: Log in to the Container registry
