@@ -41,7 +41,7 @@ jobs:
 
       - name: Log in to the Container registry
         uses: docker/login-action@v1
-        if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
+        #if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -57,7 +57,7 @@ jobs:
 
       - name: Build and push Docker Image
         uses: docker/build-push-action@v2
-        if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
+        #if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         with:
           build-args: |
             BUILD_DATE=${{ steps.gathervars.outputs.BUILD_DATE }}
@@ -70,14 +70,14 @@ jobs:
 
       - name: Extract build out of docker image
         uses: shrink/actions-docker-extract@v1
-        if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
+        #if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         id: extract
         with:
           image: ghcr.io/$REPO:${{ steps.gathervars.outputs.PRIMARY_TAG }}
           path: web
           
       - name: create release asset
-        if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
+        #if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         run: |
           cd "${{ steps.extract.outputs.destination }}"
           7z a headscale-ui.zip web
@@ -85,7 +85,7 @@ jobs:
       - name: Create Draft Release
         id: create_release
         uses: actions/create-release@v1
-        if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
+        #if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -96,7 +96,7 @@ jobs:
         
       - name: upload asset to releases  
         uses: actions/upload-release-asset@v1.0.1
-        if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
+        #if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -107,7 +107,7 @@ jobs:
 
       - name: publish release
         uses: eregon/publish-release@v1
-        if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
+        #if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
