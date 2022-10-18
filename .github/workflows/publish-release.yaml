@@ -72,7 +72,7 @@ jobs:
         if: ${{ steps.gathervars.outputs.NOT_PREVIOUSLY_PUBLISHED != 0 }}
         id: extract
         with:
-          image: ghcr.io/${{ github.repository }}:${{ steps.gathervars.outputs.PRIMARY_TAG }}
+          image: ghcr.io/$REPO:${{ steps.gathervars.outputs.PRIMARY_TAG }}
           path: web
           
       - name: create release asset
